@@ -1,6 +1,9 @@
 // const fetch = require('node-fetch');
 import fs from 'fs';
 import fetch from 'node-fetch';
+import file from '../model/json.json' assert {type: "json"};
+
+
 
 const city = 'London';
 const key = 'f63de25760b14835a8565248232407';
@@ -17,7 +20,7 @@ async function weatherapi() {
 
         
 
-        const data = {
+        const currentData = {
             "location_name": json.location.name,
             "Country": json.location.country,
             "temperature_in_celsius": json.current.temp_c,
@@ -28,14 +31,13 @@ async function weatherapi() {
         }
 
 
-        fs.appendFile(`../model/json.json`, JSON.stringify(data), () => {
-            console.log('success')
-        })
+        // fs.appendFile(`../model/json.json`, JSON.stringify(data), () => {
+        //     console.log('success')
+        // })
         
 
         const forecast_data = {
             "location_name": json.location.name,
-            "Country": json.location.country,
             "temperature_in_celsius": tempC/hour,
             "temperature_in_fahrenheit": ((tempC/hour)*9/5) + 32,
             "wind_mph": windMph/hour,
@@ -43,20 +45,19 @@ async function weatherapi() {
             "last_updated": json.current.last_updated,
         }
 
-        fs.writeFile(`../model/forecast.json`, JSON.stringify(forecast_data), () => {
-            console.log('success')
-        });
-
-
-        console.log(json.location.Country);
-        console.log(json.location.name);
-        console.log(json.current.temp_c);
-        console.log(json.current.temp_f);
-        console.log(json.current.wind_mph);
-        console.log(json.current.wind_kph);
+        // fs.writeFile(`../model/forecast.json`, JSON.stringify(forecast_data), () => {
+        //     console.log('success')
+        // });
+        
+        if(file[json.location.country]){
+            file[json.location.country].push(currentData);
+            console.log('success');
+        }else{
+            file[json.location.country] = currentData;
+        }
 
         hour++;
-        console.log(hour);
+        console.log(file);
 
     } catch (error) {
         console.log(error);
